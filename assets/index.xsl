@@ -9,6 +9,7 @@
   <xsl:param name="date"/>
   <xsl:param name="version"/>
   <xsl:param name="columns"/>
+  <xsl:param name="highlighted"/>
   <xsl:param name="hidden"/>
   <xsl:param name="js_hash"/>
   <xsl:param name="css_hash"/>
@@ -22,7 +23,7 @@
   <xsl:template name="css">
     <xsl:param name="url" as="string"/>
     <xsl:param name="hash" as="string"/>
-    <link href="{$url}" rel="stylesheet" integrity="{$hash}" crossorigin="anonymous"/>
+    <link href="{$url}" rel="stylesheet" crossorigin="anonymous"/>
   </xsl:template>
   <xsl:template match="/">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
@@ -212,10 +213,17 @@
           <xsl:for-each select="$f/*">
             <xsl:text> </xsl:text>
             <xsl:variable name="visible" select="string-length(substring-before(concat(' ,', $hidden, ','), concat(',', name(), ','))) = 0"/>
+            <xsl:variable name="is-highlighted" select="contains(concat(',', $highlighted, ','),
+            concat(',', name(), ','))"/>
             <xsl:if test="string-length(substring-before(concat(' ,', $columns, ','), concat(',', name(), ','))) = 0">
               <xsl:choose>
                 <xsl:when test="$visible">
-                  <xsl:value-of select="name()"/>
+                  <span>
+                    <xsl:if test="$is-highlighted">
+                        <xsl:attribute name="class">highlighted</xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="name()"/>
+                  </span>
                 </xsl:when>
                 <xsl:otherwise>
                   <span class="hidden" title="{.}">
@@ -224,9 +232,15 @@
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:if test="$visible">
-                <xsl:text>:</xsl:text>
+                <span>
+                    <xsl:if test="$is-highlighted">
+                        <xsl:attribute name="class">highlighted</xsl:attribute>
+                    </xsl:if>
+                    <xsl:text>:</xsl:text>
+                  </span>
                 <xsl:call-template name="value">
                   <xsl:with-param name="v" select="."/>
+                  <xsl:with-param name="h" select="$is-highlighted"/>
                 </xsl:call-template>
               </xsl:if>
             </xsl:if>
@@ -237,27 +251,33 @@
   </xsl:template>
   <xsl:template name="value">
     <xsl:param name="v"/>
-    <xsl:choose>
-      <xsl:when test="$v/v">
-        <xsl:text>[</xsl:text>
-        <xsl:for-each select="$v/v">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:call-template name="value">
-            <xsl:with-param name="v" select="."/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:text>]</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <span>
-          <xsl:attribute name="class">
-            <xsl:value-of select="$v/@t"/>
-          </xsl:attribute>
-          <xsl:value-of select="$v"/>
-        </span>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:param name="h"/>
+    <span>
+      <xsl:if test="$h">
+          <xsl:attribute name="class">highlighted</xsl:attribute>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="$v/v">
+          <xsl:text>[</xsl:text>
+          <xsl:for-each select="$v/v">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>, </xsl:text>
+            </xsl:if>
+            <xsl:call-template name="value">
+              <xsl:with-param name="v" select="."/>
+            </xsl:call-template>
+          </xsl:for-each>
+          <xsl:text>]</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <span>
+            <xsl:attribute name="class">
+              <xsl:value-of select="$v/@t"/>
+            </xsl:attribute>
+            <xsl:value-of select="$v"/>
+          </span>
+        </xsl:otherwise>
+      </xsl:choose>
+    </span>
   </xsl:template>
 </xsl:stylesheet>

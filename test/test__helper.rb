@@ -29,7 +29,6 @@ end
 require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
-Minitest.load :minitest_reporter
 
 # To make tests retry on failure:
 if ENV['RACK_RUN']

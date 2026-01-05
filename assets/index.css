@@ -8,6 +8,7 @@ section { width: 100%; }
 article { border: none; }
 header img { width: 3em; height: 3em; }
 table { table-layout: fixed; }
+thead {position: sticky; top: 0; background: white; }
 td { word-wrap: break-word; }
 .sorter { cursor: pointer; }
 .S { color: #4A5240; }
@@ -15,6 +16,7 @@ td { word-wrap: break-word; }
 .I { color: #61304B; }
 .F { color: #5C0029; }
 .BR { color: #B6C649; }
+.highlighted{ background-color: #B6C649; }
 .hidden { color: #C1C1C1; }
 .w50 { width: 50%; }
 .empty { color: lightgray; font-family: sans-serif; }
