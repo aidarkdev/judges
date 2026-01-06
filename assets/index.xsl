@@ -233,15 +233,14 @@
               </xsl:choose>
               <xsl:if test="$visible">
                 <span>
-                    <xsl:if test="$is-highlighted">
-                        <xsl:attribute name="class">highlighted</xsl:attribute>
-                    </xsl:if>
-                    <xsl:text>:</xsl:text>
-                  </span>
-                <xsl:call-template name="value">
-                  <xsl:with-param name="v" select="."/>
-                  <xsl:with-param name="h" select="$is-highlighted"/>
-                </xsl:call-template>
+                  <xsl:if test="$is-highlighted">
+                      <xsl:attribute name="class">highlighted</xsl:attribute>
+                  </xsl:if>
+                  <xsl:text>:</xsl:text>
+                  <xsl:call-template name="value">
+                    <xsl:with-param name="v" select="."/>
+                  </xsl:call-template>
+                </span>
               </xsl:if>
             </xsl:if>
           </xsl:for-each>
@@ -251,33 +250,27 @@
   </xsl:template>
   <xsl:template name="value">
     <xsl:param name="v"/>
-    <xsl:param name="h"/>
-    <span>
-      <xsl:if test="$h">
-          <xsl:attribute name="class">highlighted</xsl:attribute>
-      </xsl:if>
-      <xsl:choose>
-        <xsl:when test="$v/v">
-          <xsl:text>[</xsl:text>
-          <xsl:for-each select="$v/v">
-            <xsl:if test="position() &gt; 1">
-              <xsl:text>, </xsl:text>
-            </xsl:if>
-            <xsl:call-template name="value">
-              <xsl:with-param name="v" select="."/>
-            </xsl:call-template>
-          </xsl:for-each>
-          <xsl:text>]</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <span>
-            <xsl:attribute name="class">
-              <xsl:value-of select="$v/@t"/>
-            </xsl:attribute>
-            <xsl:value-of select="$v"/>
-          </span>
-        </xsl:otherwise>
-      </xsl:choose>
-    </span>
+    <xsl:choose>
+      <xsl:when test="$v/v">
+        <xsl:text>[</xsl:text>
+        <xsl:for-each select="$v/v">
+          <xsl:if test="position() &gt; 1">
+            <xsl:text>, </xsl:text>
+          </xsl:if>
+          <xsl:call-template name="value">
+            <xsl:with-param name="v" select="."/>
+          </xsl:call-template>
+        </xsl:for-each>
+        <xsl:text>]</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <span>
+          <xsl:attribute name="class">
+            <xsl:value-of select="$v/@t"/>
+          </xsl:attribute>
+          <xsl:value-of select="$v"/>
+        </span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
